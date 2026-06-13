@@ -49,7 +49,7 @@ async def google_callback(code: str, db: Session = Depends(get_db)):
     token_url = "https://oauth2.googleapis.com/token"
     token_data = {
         "client_id": settings.GOOGLE_CLIENT_ID,
-        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+        "client_secret": settings.GOOGLE_CLIENT_SECRET.get_secret_value(),
         "code": code,
         "grant_type": "authorization_code",
         "redirect_uri": settings.GOOGLE_REDIRECT_URI
@@ -57,10 +57,13 @@ async def google_callback(code: str, db: Session = Depends(get_db)):
     
     async with httpx.AsyncClient() as client:
         token_response = await client.post(token_url, data=token_data)
-        
+
+    # If Google returned a non-200, include response text in logs for diagnostics
     if token_response.status_code != 200:
+        # print for console; uvicorn will capture this in logs
+        print('Google token exchange failed:', token_response.status_code, token_response.text)
         raise HTTPException(status_code=400, detail="Failed to retrieve token from Google exchange")
-        
+
     tokens = token_response.json()
     access_token = tokens.get("access_token")
 
