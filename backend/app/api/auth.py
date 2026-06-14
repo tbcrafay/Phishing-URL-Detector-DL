@@ -31,7 +31,8 @@ async def google_login():
         f"client_id={settings.GOOGLE_CLIENT_ID}&"
         f"redirect_uri={settings.GOOGLE_REDIRECT_URI}&"
         f"response_type=code&"
-        f"scope=openid%20email%20profile"
+        f"scope=openid%20email%20profile&"
+        f"prompt=select_account"
     )
     return RedirectResponse(url=google_auth_url)
 
@@ -102,8 +103,6 @@ async def google_callback(code: str, db: Session = Depends(get_db)):
     # 4. Generate our app's own security JWT payload for session management
     jwt_token = create_access_token(data={"sub": user.email, "user_id": user.id})
 
-    return {
-        "access_token": jwt_token,
-        "token_type": "bearer",
-        "user": user
-    }
+    frontend_callback_url = f"http://localhost:5173/auth/callback?token={jwt_token}"
+    
+    return RedirectResponse(url=frontend_callback_url)

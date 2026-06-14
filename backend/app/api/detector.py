@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 from typing import List
+import json
 
 from app.core.database import get_db
 from app.core.security import get_current_user
@@ -39,6 +40,14 @@ async def scan_textual_url(
     db.commit()
     db.refresh(new_scan)
     
+    # Secure attention weights decoding logic for clean JSON formatting
+    weights_payload = new_scan.attention_weights
+    if isinstance(weights_payload, str):
+        try:
+            weights_payload = json.loads(weights_payload)
+        except Exception:
+            pass
+
     # 3. Format database outputs cleanly to fit our Pydantic serializations
     return ScanResponse(
         id=new_scan.id,
@@ -49,9 +58,30 @@ async def scan_textual_url(
             cnn_score=new_scan.cnn_prediction,
             lstm_score=new_scan.lstm_prediction
         ),
-        attention_weights=new_scan.attention_weights,
+        attention_weights=weights_payload,
         created_at=new_scan.created_at
     )
+
+@router.delete("/history/{scan_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_scan_entry(
+    scan_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Remove a specific scan log entry from historical records.
+    """
+    scan_log = db.query(Scan).filter(Scan.id == scan_id, Scan.user_id == current_user.id).first()
+    
+    if not scan_log:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Requested intelligence record not found or unauthorized access."
+        )
+        
+    db.delete(scan_log)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.get("/history", response_model=List[ScanHistoryItem])
 async def get_scan_history(
@@ -63,10 +93,6 @@ async def get_scan_history(
     Fetches all historical threat scans completed by the authenticated user,
     sorted by the most recent execution timestamp.
     """
-    # Query the database for scans belonging exclusively to the current user
-    user_scans = db.query(Scan)\
-                   .filter(Scan.user_id == current_user.id)\
-                   .order_by(Scan.created_at.desc())\
-                   .all()
-    
-    return user_scans
+    # CRITICAL FIX: Explicitly filter by current_user.id so users don't see each other's data
+    history = db.query(Scan).filter(Scan.user_id == current_user.id).order_by(Scan.created_at.desc()).all()
+    return history
