@@ -53,8 +53,6 @@ async def scan_textual_url(
         created_at=new_scan.created_at
     )
 
- # Update this import line
-
 @router.get("/history", response_model=List[ScanHistoryItem])
 async def get_scan_history(
     db: Session = Depends(get_db), 
