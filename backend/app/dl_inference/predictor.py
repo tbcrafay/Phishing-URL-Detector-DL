@@ -1,4 +1,4 @@
-import os, json, tensorflow as tf
+import os, json, tensorflow as tf # type: ignore
 from .cnn_inference import CNNInference
 from .lstm_inference import BiLSTMInference
 from .ensemble_engine import EnsembleEngine  # IMPORTED
