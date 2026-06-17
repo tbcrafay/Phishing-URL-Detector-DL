@@ -33,10 +33,10 @@ class URLPredictor:
         print(f"⏳ Simulating neural layer processing for dashboard stability...")
         time.sleep(3.5)
 
-        # 📊 Step 1: Run Heuristics Extractor (Get basic structural diagnostic logs)
+       
         features = URLFeatureExtractor.extract_features(url)
         
-        # 🧠 Step 2: Always execute DL Models to preserve dynamic frontend charts & XAI
+        
         cnn_score = self.cnn.predict_score(url)
         lstm_score = self.lstm.predict_score(url)
         
@@ -49,7 +49,7 @@ class URLPredictor:
         print(f"📊 Raw BiLSTM Score     : {lstm_score:.4f}")
         print(f"🧠 Combined Ensemble   : {raw_ensemble:.4f}")
         
-        # 🛡️ Step 3: Advanced Calibration Engine to suppress neural overfitting on safe sites
+        
         detection_type = "deep_learning_ensemble"
         reason = "Classification decided by 1D-CNN & BiLSTM neural network state consistency."
         confidence_score = raw_ensemble
