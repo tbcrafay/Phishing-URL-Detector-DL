@@ -1,5 +1,6 @@
 // src/pages/Auth.jsx
 import React from 'react';
+import phishLogo from "../assets/phishlogo2.png";
 
 const Auth = () => {
     const handleGoogleLogin = () => {
@@ -15,12 +16,14 @@ const Auth = () => {
                 {/* Brand Showcase Side */}
                 <div className="p-8 md:p-12 bg-gradient-to-br from-indigo-950/50 via-slate-900/50 to-emerald-950/30 flex flex-col justify-center border-b md:border-b-0 md:border-r border-slate-700/50">
                     <div className="mb-6 flex justify-center md:justify-start">
-                        <img 
-                            src="/phish.jpg" 
-                            alt="PhishGuard Logo" 
-                            className="w-20 h-20 rounded-xl object-cover border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-                            onError={(e) => { e.target.src = "https://placehold.co/150x150/0f172a/ffffff?text=PhishGuard" }}
-                        />
+                        <div className="w-20 h-20 rounded-xl flex items-center justify-center overflow-hidden">
+                            <img 
+                                src={phishLogo} 
+                                alt="PhishGuard Logo" 
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.target.src = "https://placehold.co/150x150/0f172a/ffffff" }}
+                            />
+                        </div>
                     </div>
                     <h1 className="text-3xl font-extrabold tracking-tight text-white mb-2 text-center md:text-left">
                         Phish<span className="text-cyan-400">Guard</span>

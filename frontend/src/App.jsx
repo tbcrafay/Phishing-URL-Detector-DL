@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import History from './pages/History';
 import News from './pages/News';
 import About from './pages/About';
+import Community from './pages/Community'; // 🔥 Importing Community Hub Component
 import './index.css';
 
 // Route Guard Wrapper preventing unauthenticated breaches
@@ -39,6 +40,12 @@ function AppContent() {
                 <Route path="/news" element={
                     <ProtectedRoute>
                         <News />
+                    </ProtectedRoute>
+                } />
+                {/* 🔥 Secure Community Hub Gateway */}
+                <Route path="/community" element={
+                    <ProtectedRoute>
+                        <Community />
                     </ProtectedRoute>
                 } />
                 <Route path="/about" element={

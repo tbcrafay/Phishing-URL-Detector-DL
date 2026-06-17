@@ -15,3 +15,4 @@ class User(Base):
 
     # ADD THIS LINE: Links user profile to their list of historical scans
     scans = relationship("Scan", back_populates="user", cascade="all, delete-orphan")
+    posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")

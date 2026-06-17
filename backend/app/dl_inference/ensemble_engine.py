@@ -5,7 +5,7 @@ class EnsembleEngine:
     @staticmethod
     def calculate_ensemble(cnn_score: float, lstm_score: float) -> float:
         # Balanced structural weights
-        return round(float((cnn_score * 0.30) + (lstm_score * 0.70)), 4)
+        return round(float((cnn_score * 0.50) + (lstm_score * 0.50)), 4)
 
     @staticmethod
     def generate_authentic_xai(url: str, cnn_engine, lstm_engine) -> Dict[str, float]:

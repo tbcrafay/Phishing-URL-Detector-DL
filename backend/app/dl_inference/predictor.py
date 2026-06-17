@@ -42,10 +42,22 @@ class URLPredictor:
         # Classification core gate
         is_phishing = bool(confidence_score >= 0.50)
         
+
+
+
+
+
+
+
+
+
+
+        
         # 🛡️ BULLETPROOF DOMAIN FIREWALL RULES
         clean_url = url.lower().strip()
         parsed_url = urlparse(clean_url)
         trusted_hosts = {
+            'https://www.paypal.com',
             'google.com',
             'www.google.com',
             'youtube.com',
